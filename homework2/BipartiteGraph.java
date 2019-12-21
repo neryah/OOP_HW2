@@ -149,7 +149,7 @@ public class BipartiteGraph<T> {
     }
 
     /**
-     * @return an immutable collection of the labels of the parent's children,
+     * @return an immutable collection of the labels of the parent's children, in alphabetical order.
      * empty collection in case there is no node 'parent'
      */
     public Collection<T> listChildren(T parent) {
@@ -164,7 +164,7 @@ public class BipartiteGraph<T> {
     }
 
     /**
-     * @return an immutable collection of the labels of the child's parents,
+     * @return an immutable collection of the labels of the child's parents, in alphabetical order.
      * empty collection in case there is no node 'child'
      */
     public Collection<T> listParents(T child) {
@@ -244,7 +244,7 @@ public class BipartiteGraph<T> {
      * It can have in (parent) and out (child) edges, and contains all the information about it's edges.
      * It can be classified as black or white.
      */
-    public class Node<T> {
+    private class Node<T> {
 
         /**
          * Abstraction function:	Node is a labeled node. The label is from the same type of the instance
