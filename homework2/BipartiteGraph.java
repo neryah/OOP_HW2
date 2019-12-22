@@ -22,6 +22,7 @@ public class BipartiteGraph<T> {
      * Abstraction function:	BipartiteGraph is a bipartite graph where every node contains it's
      * 							label, data and color. The nodes stored in 'nodes' map from label to node.
      * 						    Every node contains all the information about in and out edges.
+     * 						    All labels has hashKey. Node's labels has compare function (< | = | >)
      */
 
     /**
@@ -63,14 +64,13 @@ public class BipartiteGraph<T> {
     }
 
     /**
-     * @requires data != null.
      * @modifies this nodes.
      * @effects adds label to the graph's nodes.
-     * @return true iff the label was added now.
+     * @return true iff the node was added now.
      */
     public boolean addNode(T label, Object data, boolean isBlack) {
         assert checkRep();
-        if (findNode(label) != null) {
+        if (label == null || findNode(label) != null) {
             assert checkRep();
             return false;
         }
@@ -98,14 +98,16 @@ public class BipartiteGraph<T> {
     /**
      * @modifies this nodes and edges.
      * @effects adds label to the graph's edges.
-     * @return a boolean value representing if the edge was added.
+     * @return a boolean value iff the edge from->to was added now or before,
+     * notice, if this edge was added before with different name - the old name will stay
      */
     public boolean addEdge(T from, T to, T label) {
         assert checkRep();
-        Node<T> parent = this.findNode(from);
-        Node<T> child = this.findNode(to);
+        Node<T> parent = findNode(from);
+        Node<T> child = findNode(to);
         if(parent != null && child != null && !parent.edgeExist(label, true) &&
-                !child.edgeExist(label, false) && parent.getLabel() != child.getLabel()){
+                !child.edgeExist(label, false) && parent.getLabel() != child.getLabel() &&
+                parent.isBlack() != child.isBlack()){
             parent.addChild(label, child);
             child.addParent(label, parent);
             assert checkRep();
@@ -199,7 +201,7 @@ public class BipartiteGraph<T> {
         assert checkRep();
         Node<T> c = findNode(child);
         if(c != null){
-            Node<T> parent = c.getChildrenEdges().get(edgeLabel);
+            Node<T> parent = c.getParentsEdges().get(edgeLabel);
             assert checkRep();
             return parent != null ? parent.getLabel() : null;
         }
