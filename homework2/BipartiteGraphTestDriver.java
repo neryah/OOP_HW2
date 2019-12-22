@@ -150,17 +150,17 @@ public class BipartiteGraphTestDriver {
     private static String listToString(List<String> list){
         String spaceSeparated = new String();
         for (String s : list) {
-            spaceSeparated += " " + s;
+            spaceSeparated += s + " ";
         }
-        return spaceSeparated;
+        return spaceSeparated.trim();
     }
 
     private static String TreeToString(TreeSet<String> tree){
         String spaceSeparated = new String();
         for (String s : tree) {
-            spaceSeparated += " " + s;
+            spaceSeparated += s + " ";
         }
-        return spaceSeparated;
+        return spaceSeparated.trim();
     }
 
 }
