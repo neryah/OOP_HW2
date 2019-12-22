@@ -41,7 +41,7 @@ public class SimulatorTestDriver {
 	 * @effects Creates a new Channel named by the String channelName, with a limit, and add it to
 	 *          the simulator named simName.
 	 */
-	public void addChannel(String simName, String channelName, double limit) {
+	public void addChannel(String simName, String channelName, int limit) {
 	    // TODO: Implement this method
 	}
 
