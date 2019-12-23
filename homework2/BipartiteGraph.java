@@ -1,11 +1,6 @@
 package homework2;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.TreeSet;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * A bipartite graph is a directed graph with two types (colors) of nodes: white and black,
@@ -22,7 +17,6 @@ public class BipartiteGraph<T> {
      * Abstraction function:	BipartiteGraph is a bipartite graph where every node contains it's
      * 							label, data and color. The nodes stored in 'nodes' map from label to node.
      * 						    Every node contains all the information about in and out edges.
-     * 						    All labels has hashKey. Node's labels has compare function (< | = | >)
      */
 
     /**
@@ -156,7 +150,7 @@ public class BipartiteGraph<T> {
      */
     public Collection<T> listChildren(T parent) {
         assert checkRep();
-        Collection<T> container = new TreeSet<>();
+        Collection<T> container = new HashSet<>();
         Node<T> p = findNode(parent);
         if (p != null) {
             container = p.getChildrenLabels();
@@ -254,8 +248,8 @@ public class BipartiteGraph<T> {
          *                          'isBlack' - true for black, otherwise - white. 'data' - data of type Object.
          *                          'outEdges' - out edges for children, Maps edge label of type T to child Node.
          *                          'inEdges' - in edges for parents, Maps edge label of type T to parent Node.
-         *                          'childrenLabels' - Alphabetical Tree of all the children labels.
-         *                          'parentLabels' - Alphabetical Tree of all the children labels.
+         *                          'childrenLabels' - List of all the children labels.
+         *                          'parentLabels' - List of all the children labels.
          */
 
         /**
@@ -275,8 +269,8 @@ public class BipartiteGraph<T> {
 
         private Map<T, Node<T>> outEdges = new HashMap<>();
         private Map<T, Node<T>> inEdges = new HashMap<>();
-        private Collection<T> childrenLabels = new TreeSet<>();
-        private Collection<T> parentLabels = new TreeSet<>();
+        private Collection<T> childrenLabels = new ArrayList<>();
+        private Collection<T> parentLabels = new ArrayList<>();
 
 
         /**

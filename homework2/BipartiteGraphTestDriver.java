@@ -109,8 +109,9 @@ public class BipartiteGraphTestDriver {
      * 		   parentName in the graph graphName, in alphabetical order.
      */
     public String listChildren(String graphName, String parentName) {
-        TreeSet<String> tree = new TreeSet<>(graphs.get(graphName).listChildren(parentName));
-        return TreeToString(tree);
+        List<String> children = new ArrayList<>(graphs.get(graphName).listChildren(parentName));
+        Collections.sort(children);
+        return listToString(children);
     }
 
 
@@ -120,8 +121,9 @@ public class BipartiteGraphTestDriver {
      * 		   childName in the graph graphName, in alphabetical order.
      */
     public String listParents(String graphName, String childName) {
-        TreeSet<String> tree = new TreeSet<>(graphs.get(graphName).listParents(childName));
-        return TreeToString(tree);
+        List<String> parents = new ArrayList<>(graphs.get(graphName).listParents(childName));
+        Collections.sort(parents);
+        return listToString(parents);
     }
 
 
@@ -147,7 +149,7 @@ public class BipartiteGraphTestDriver {
         return graphs.get(graphName).getParentByEdgeLabel(childName, edgeLabel);
     }
 
-    private static String listToString(List<String> list){
+    private static String listToString(Collection<String> list){
         String spaceSeparated = new String();
         for (String s : list) {
             spaceSeparated += s + " ";
@@ -155,12 +157,5 @@ public class BipartiteGraphTestDriver {
         return spaceSeparated.trim();
     }
 
-    private static String TreeToString(TreeSet<String> tree){
-        String spaceSeparated = new String();
-        for (String s : tree) {
-            spaceSeparated += s + " ";
-        }
-        return spaceSeparated.trim();
-    }
 
 }
