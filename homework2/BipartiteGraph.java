@@ -22,8 +22,10 @@ public class BipartiteGraph<T> {
     /**
      * Rep. Invariant:	for all edges touching node V:
      * 						V.color != otherEndOfEdges.color
-     * 	    				    for every child w of v:
-     * 				                v is parent of w
+     * 	    				for every parent w of v:
+     * 				             v is child of w
+     * 	    				for every child w of v:
+     * 				             v is parent of w
      */
 
     private boolean checkRep() {
