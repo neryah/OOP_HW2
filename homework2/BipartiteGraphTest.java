@@ -212,6 +212,68 @@ public class BipartiteGraphTest {
         assertEquals("Wrong parents of bn4", "", driver.listParents("g1", "bn4"));
     }
 
+    @Test
+    public void getNeighborsAsSet() {
+        BipartiteGraph<String> g = new BipartiteGraph<String>();
+
+        assertEquals("Legal node failed to be added", true, g.addNode("bn1", null, true));
+        assertEquals("Legal node failed to be added", true, g.addNode("wn1", null, false));
+        assertEquals("Legal node failed to be added", true, g.addNode("bn2", null, true));
+        assertEquals("Legal node failed to be added", true, g.addNode("wn2", null, false));
+        assertEquals("Legal node failed to be added", true, g.addNode("bn3", null, true));
+        assertEquals("Legal node failed to be added", true, g.addNode("wn3", null, false));
+        assertEquals("Legal node failed to be added", true, g.addNode("bn4", null, true));
+        assertEquals("Legal node failed to be added", true, g.addNode("wn4", null, false));
+
+        //add some legal edges
+        assertEquals("Legal edge failed to be added", true, g.addEdge("bn1", "wn1", "e1"));
+        assertEquals("Legal edge failed to be added", true, g.addEdge("bn4", "wn4", "e3"));
+        assertEquals("Legal edge failed to be added", true, g.addEdge("wn4", "bn3", "e1"));
+        assertEquals("Legal edge failed to be added", true, g.addEdge("bn3", "wn3", "e2"));
+        assertEquals("Legal edge failed to be added", true, g.addEdge("wn3", "bn2", "e3"));
+        assertEquals("e1 is already in edge for bn3", false, g.addEdge("wn2", "bn3", "e1"));
+
+        assertEquals("Wrong parents of wn1", g.listParents("wn1") + " ", g.SetParents("wn1") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("wn2") + " ", g.SetParents("wn2") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("wn3") + " ", g.SetParents("wn3") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("wn4") + " ", g.SetParents("wn4") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("bn1") + " ", g.SetParents("bn1") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("bn2") + " ", g.SetParents("bn2") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("bn3") + " ", g.SetParents("bn3") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("bn4") + " ", g.SetParents("bn4") + " ");
+
+        assertEquals("Wrong parents of wn1", g.listChildren("wn1") + " ", g.SetChildren("wn1") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("wn2") + " ", g.SetChildren("wn2") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("wn3") + " ", g.SetChildren("wn3") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("wn4") + " ", g.SetChildren("wn4") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("bn2") + " ", g.SetChildren("bn2") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("bn3") + " ", g.SetChildren("bn3") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("bn4") + " ", g.SetChildren("bn4") + " ");
+
+        //change the graph and then check again
+        g.removeEdge("e1", "bn1", true);
+        g.removeEdge("e2", "wn2", true);
+        g.removeEdge("e2", "bn1", false);
+        assertEquals("Legal node failed to be deleted", true, g.removeNode("bn1"));
+        assertEquals("Legal node failed to be deleted", true, g.removeNode("wn2"));
+
+        assertEquals("Wrong parents of wn1", g.listParents("wn1") + " ", g.SetParents("wn1") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("wn2") + " ", g.SetParents("wn2") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("wn3") + " ", g.SetParents("wn3") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("wn4") + " ", g.SetParents("wn4") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("bn1") + " ", g.SetParents("bn1") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("bn2") + " ", g.SetParents("bn2") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("bn3") + " ", g.SetParents("bn3") + " ");
+        assertEquals("Wrong parents of wn1", g.listParents("bn4") + " ", g.SetParents("bn4") + " ");
+
+        assertEquals("Wrong parents of wn1", g.listChildren("wn1") + " ", g.SetChildren("wn1") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("wn2") + " ", g.SetChildren("wn2") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("wn3") + " ", g.SetChildren("wn3") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("wn4") + " ", g.SetChildren("wn4") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("bn2") + " ", g.SetChildren("bn2") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("bn3") + " ", g.SetChildren("bn3") + " ");
+        assertEquals("Wrong parents of wn1", g.listChildren("bn4") + " ", g.SetChildren("bn4") + " ");
+    }
 
     @Test
     public void removeNodes() {

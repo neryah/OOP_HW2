@@ -145,12 +145,12 @@ public class BipartiteGraph<T> {
     }
 
     /**
-     * @return an immutable collection of the labels of the parent's children, in alphabetical order.
+     * @return an immutable collection of the labels of the parent's children.
      * empty collection in case there is no node 'parent'
      */
     public Collection<T> listChildren(T parent) {
         assert checkRep();
-        Collection<T> container = new HashSet<>();
+        Collection<T> container = new ArrayList<>();
         Node<T> p = findNode(parent);
         if (p != null) {
             container = p.getChildrenLabels();
@@ -160,15 +160,45 @@ public class BipartiteGraph<T> {
     }
 
     /**
-     * @return an immutable collection of the labels of the child's parents, in alphabetical order.
+     * @return an immutable collection of the labels of the child's parents.
      * empty collection in case there is no node 'child'
      */
     public Collection<T> listParents(T child) {
         assert checkRep();
-        Collection<T> container = new TreeSet<>();
+        Collection<T> container = new ArrayList<>();
         Node<T> c = findNode(child);
         if (c != null) {
             container = c.getParentsLabels();
+        }
+        assert checkRep();
+        return Collections.unmodifiableCollection(container);
+    }
+
+    /**
+     * @return an immutable collection of the labels of the parent's children.
+     * empty collection in case there is no node 'parent'
+     */
+    public Collection<T> SetChildren(T parent) {
+        assert checkRep();
+        Collection<T> container = new HashSet<>();
+        Node<T> p = findNode(parent);
+        if (p != null) {
+            container = p.getChildrenLabelsSet();
+        }
+        assert checkRep();
+        return Collections.unmodifiableCollection(container);
+    }
+
+    /**
+     * @return an immutable collection of the labels of the child's parents.
+     * empty collection in case there is no node 'child'
+     */
+    public Collection<T> SetParents(T child) {
+        assert checkRep();
+        Collection<T> container = new HashSet<>();
+        Node<T> c = findNode(child);
+        if (c != null) {
+            container = c.getParentsLabelsSet();
         }
         assert checkRep();
         return Collections.unmodifiableCollection(container);
@@ -250,16 +280,21 @@ public class BipartiteGraph<T> {
          *                          'inEdges' - in edges for parents, Maps edge label of type T to parent Node.
          *                          'childrenLabels' - List of all the children labels.
          *                          'parentLabels' - List of all the children labels.
+         *                          'childrenLabelsSet' - Set of all the children labels.
+         *                          'parentLabelsSet' - Set of all the children labels.
          */
 
         /**
-         * Rep. Invariant:	(outEdges, inEdges, childrenLabels, parentLabels) != null
-         *                  outEdges.size() == childrenLabels.size() && inEdges.size() == parentLabels.size()
+         * Rep. Invariant:(outEdges, inEdges, childrenLabels, parentLabels, childrenLabelsSet, parentLabelsSet) != null
+         *                  outEdges.size() == childrenLabels.size() && inEdges.size() == parentLabels.size() &&
+         *                  outEdges.size() == childrenLabelsSet.size() && inEdges.size() == parentLabelsSet.size()
          */
 
         private boolean checkRep() {
-            boolean noNull = outEdges != null && inEdges != null && childrenLabels != null && parentLabels != null;
-            boolean goodSizes = outEdges.size() == childrenLabels.size() && inEdges.size() == parentLabels.size();
+            boolean noNull = outEdges != null && inEdges != null && childrenLabels != null &&
+                    parentLabels != null && childrenLabelsSet != null && parentLabelsSet != null;
+            boolean goodSizes = outEdges.size() == childrenLabels.size() && inEdges.size() == parentLabels.size() &&
+                    outEdges.size() == childrenLabelsSet.size() && inEdges.size() == parentLabelsSet.size();
             return noNull && goodSizes;
         }
 
@@ -269,9 +304,10 @@ public class BipartiteGraph<T> {
 
         private Map<T, Node<T>> outEdges = new HashMap<>();
         private Map<T, Node<T>> inEdges = new HashMap<>();
-        private Collection<T> childrenLabels = new ArrayList<>();
-        private Collection<T> parentLabels = new ArrayList<>();
-
+        private Collection<T> childrenLabels = new ArrayList<>(); //assignment requirements - return this in O(1)
+        private Collection<T> parentLabels = new ArrayList<>();   //assignment requirements - return this in O(1)
+        private Collection<T> childrenLabelsSet = new HashSet<>();
+        private Collection<T> parentLabelsSet = new HashSet<>();
 
         /**
          * @effects constructor of Node, initiate with all the data of the node itself: label, data, isBlack.
@@ -350,6 +386,22 @@ public class BipartiteGraph<T> {
         }
 
         /**
+         * @return a collection of children nodes labels.
+         */
+        public Collection<T> getChildrenLabelsSet() {
+            assert checkRep();
+            return childrenLabelsSet;
+        }
+
+        /**
+         * @return a collection of parent nodes labels.
+         */
+        public Collection<T> getParentsLabelsSet() {
+            assert checkRep();
+            return parentLabelsSet;
+        }
+
+        /**
          * @modifies All neighbors of this Node.
          * @effects removes this node connections from all his child\parents, so it can be destruct.
          */
@@ -358,10 +410,12 @@ public class BipartiteGraph<T> {
             for (Map.Entry<T, Node<T>> edge : outEdges.entrySet()) {
                 edge.getValue().inEdges.remove(edge.getKey());
                 edge.getValue().parentLabels.remove(label);
+                edge.getValue().parentLabelsSet.remove(label);
             }
             for (Map.Entry<T, Node<T>> edge : inEdges.entrySet()) {
                 edge.getValue().outEdges.remove(edge.getKey());
                 edge.getValue().childrenLabels.remove(label);
+                edge.getValue().childrenLabelsSet.remove(label);
             }
             assert checkRep();
         }
@@ -376,7 +430,9 @@ public class BipartiteGraph<T> {
             if(toRemove != null){
                 toRemove.inEdges.remove(edgeLabel);
                 toRemove.parentLabels.remove(label);
+                toRemove.parentLabelsSet.remove(label);
                 childrenLabels.remove(toRemove.label);
+                childrenLabelsSet.remove(toRemove.label);
             }
             assert checkRep();
         }
@@ -392,6 +448,8 @@ public class BipartiteGraph<T> {
                 toRemove.outEdges.remove(edgeLabel);
                 toRemove.childrenLabels.remove(label);
                 parentLabels.remove(toRemove.label);
+                toRemove.childrenLabelsSet.remove(label);
+                parentLabelsSet.remove(toRemove.label);
             }
             assert checkRep();
         }
@@ -412,8 +470,9 @@ public class BipartiteGraph<T> {
         public void addChild(T edgeLabel, Node<T> child) {
             assert checkRep();
             if (child != null && edgeLabel != null && !outEdges.containsKey(edgeLabel)
-                    && !childrenLabels.contains(child.getLabel())) {
+                    && !childrenLabelsSet.contains(child.getLabel())) {
                 childrenLabels.add(child.getLabel());
+                childrenLabelsSet.add(child.getLabel());
                 outEdges.put(edgeLabel, child);
             }
             assert checkRep();
@@ -427,8 +486,9 @@ public class BipartiteGraph<T> {
         public void addParent(T edgeLabel, Node<T> parent) {
             assert checkRep();
             if (parent != null && edgeLabel != null && !inEdges.containsKey(edgeLabel)
-                    && !parentLabels.contains(parent.getLabel())) {
+                    && !parentLabelsSet.contains(parent.getLabel())) {
                 parentLabels.add(parent.getLabel());
+                parentLabelsSet.add(parent.getLabel());
                 inEdges.put(edgeLabel, parent);
             }
             assert checkRep();
