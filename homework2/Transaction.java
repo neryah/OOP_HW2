@@ -24,7 +24,7 @@ public class Transaction {
 	/**
 	 * @effects Returns the amount of the transaction
 	 */
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
     
@@ -34,11 +34,15 @@ public class Transaction {
     public String getProduct() {
         return product;
     }
-    
+
+    /**
+     * @effects this amount, set it to newAmount.
+     */
+    public void setAmount(int newAmount){amount = newAmount;}
+
     @Override
     public String toString() {
         return "Transaction: " + this.hashCode() + " Product: " + product + " Amount: " + amount;
     }
-    
-    
+
 }

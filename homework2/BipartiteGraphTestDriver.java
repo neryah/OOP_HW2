@@ -150,11 +150,11 @@ public class BipartiteGraphTestDriver {
     }
 
     private static String listToString(Collection<String> list){
-        String spaceSeparated = new String();
+        StringBuilder spaceSeparated = new StringBuilder();
         for (String s : list) {
-            spaceSeparated += s + " ";
+            spaceSeparated.append(s).append(" ");
         }
-        return spaceSeparated.trim();
+        return spaceSeparated.toString().trim();
     }
 
 

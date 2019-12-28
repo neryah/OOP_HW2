@@ -448,5 +448,25 @@ public class BipartiteGraphTest {
         assertEquals("wrong data", data1, g.getNodeData("bn1"));
         assertEquals("wrong data", data2, g.getNodeData("wn1"));
     }
+//
+//    @Test
+//    public void getNeighborsAsList() {
+//        BipartiteGraph<String> g = new BipartiteGraph<String>();
+//
+//        assertEquals("Legal node failed to be added", true, g.addNode("bn1", null, true));
+//        assertEquals("Legal node failed to be added", true, g.addNode("wn1", null, false));
+//        assertEquals("Legal node failed to be added", true, g.addNode("bn2", null, true));
+//        assertEquals("Legal node failed to be added", true, g.addNode("bn3", null, true));
+//        assertEquals("Legal node failed to be added", true, g.addNode("bn4", null, true));
+//
+//        //add some legal edges
+//        assertEquals("Legal edge failed to be added", true, g.addEdge("wn1", "bn1", "e1"));
+//        assertEquals("Legal edge failed to be added", true, g.addEdge("wn1", "bn2", "e2"));
+//        assertEquals("Legal edge failed to be added", true, g.addEdge("wn1", "bn3", "e3"));
+//        assertEquals("Legal edge failed to be added", true, g.addEdge("wn1", "bn4", "e4"));
+//
+//
+//        assertEquals("Wrong children of wn1", "[bn1, bn2, bn3, bn4]", g.listChildren("wn1") );
 
+//    }
 }

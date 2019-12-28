@@ -29,20 +29,20 @@ public class BipartiteGraph<T> {
      */
 
     private boolean checkRep() {
-        for(Node<T> node : nodes.values()) {
-            for (Map.Entry<T, Node<T>> edge : node.outEdges.entrySet()) {
-                assert edge.getValue().inEdges.get(edge.getKey()) == node;
+        for(Node<T> node : _nodes.values()) {
+            for (Map.Entry<T, Node<T>> edge : node.getChildrenEdges().entrySet()) {
+                assert edge.getValue().getParentsEdges().get(edge.getKey()) == node;
                 assert edge.getValue().isBlack() != node.isBlack();
             }
-            for (Map.Entry<T, Node<T>> edge : node.inEdges.entrySet()) {
-                assert edge.getValue().outEdges.get(edge.getKey()) == node;
+            for (Map.Entry<T, Node<T>> edge : node.getParentsEdges().entrySet()) {
+                assert edge.getValue().getChildrenEdges().get(edge.getKey()) == node;
                 assert edge.getValue().isBlack() != node.isBlack();
             }
         }
         return true;
     }
 
-    private Map<T, Node<T>> nodes = new HashMap<>();
+    private Map<T, Node<T>> _nodes = new HashMap<>();
 
     /**
      * @return a new empty instance of this.
@@ -56,7 +56,7 @@ public class BipartiteGraph<T> {
      */
     public Node<T> findNode(T label) {
         assert checkRep();
-        return nodes.get(label);
+        return _nodes.get(label);
     }
 
     /**
@@ -70,7 +70,7 @@ public class BipartiteGraph<T> {
             assert checkRep();
             return false;
         }
-        return nodes.put(label, new Node<T>(label, data, isBlack)) == null;
+        return _nodes.put(label, new Node<T>(label, data, isBlack)) == null;
     }
 
     /**
@@ -80,10 +80,10 @@ public class BipartiteGraph<T> {
      */
     public boolean removeNode(T label) {
         assert checkRep();
-        Node<T> toRemove = nodes.get(label);
+        Node<T> toRemove = _nodes.get(label);
         if(toRemove != null){
             toRemove.removeNode();
-            nodes.remove(label);
+            _nodes.remove(label);
             assert checkRep();
             return true;
         }
@@ -94,7 +94,7 @@ public class BipartiteGraph<T> {
     /**
      * @modifies this nodes and edges.
      * @effects adds label to the graph's edges.
-     * @return a boolean value iff the edge from->to was added now or before,
+     * @return true iff the edge from->to was added now or before,
      * notice, if this edge was added before with different name - the old name will stay
      */
     public boolean addEdge(T from, T to, T label) {
@@ -137,7 +137,7 @@ public class BipartiteGraph<T> {
     public Collection<T> listNodes(boolean isBlack) {
         assert checkRep();
         Collection<T> container = new ArrayList<>();
-        for (Node<T> val : nodes.values()) {
+        for (Node<T> val : _nodes.values()) {
             if (val.isBlack() == isBlack) {
                 container.add(val.getLabel());
             }
@@ -262,239 +262,9 @@ public class BipartiteGraph<T> {
      * @effects resets the graph.
      */
     public void clear() {
-        this.checkRep();
-        nodes.clear();
-        this.checkRep();
-    }
-
-    /**
-     * A Node is an object containing data and identified by a label.
-     * It can have in (parent) and out (child) edges, and contains all the information about it's edges.
-     * It can be classified as black or white.
-     */
-    private class Node<T> {
-
-        /**
-         * Abstraction function:	Node is a labeled node. The label is from the same type of the instance
-         *                          of BipartiteGraph - T. In addition, any node contains:
-         *                          'isBlack' - true for black, otherwise - white. 'data' - data of type Object.
-         *                          'outEdges' - out edges for children, Maps edge label of type T to child Node.
-         *                          'inEdges' - in edges for parents, Maps edge label of type T to parent Node.
-         *                          'childrenLabels' - List of all the children labels.
-         *                          'parentLabels' - List of all the children labels.
-         *                          'childrenLabelsSet' - Set of all the children labels.
-         *                          'parentLabelsSet' - Set of all the children labels.
-         */
-
-        /**
-         * Rep. Invariant:(outEdges, inEdges, childrenLabels, parentLabels, childrenLabelsSet, parentLabelsSet) != null
-         *                  outEdges.size() == childrenLabels.size() && inEdges.size() == parentLabels.size() &&
-         *                  outEdges.size() == childrenLabelsSet.size() && inEdges.size() == parentLabelsSet.size()
-         */
-
-        private boolean checkRep() {
-            boolean noNull = outEdges != null && inEdges != null && childrenLabels != null &&
-                    parentLabels != null && childrenLabelsSet != null && parentLabelsSet != null;
-            boolean goodSizes = outEdges.size() == childrenLabels.size() && inEdges.size() == parentLabels.size() &&
-                    outEdges.size() == childrenLabelsSet.size() && inEdges.size() == parentLabelsSet.size();
-            return noNull && goodSizes;
-        }
-
-        private T label;
-        private Object data;
-        private boolean isBlack;
-
-        private Map<T, Node<T>> outEdges = new HashMap<>();
-        private Map<T, Node<T>> inEdges = new HashMap<>();
-        private Collection<T> childrenLabels = new ArrayList<>(); //assignment requirements - return this in O(1)
-        private Collection<T> parentLabels = new ArrayList<>();   //assignment requirements - return this in O(1)
-        private Collection<T> childrenLabelsSet = new HashSet<>();
-        private Collection<T> parentLabelsSet = new HashSet<>();
-
-        /**
-         * @effects constructor of Node, initiate with all the data of the node itself: label, data, isBlack.
-         */
-        public Node(T label, Object data, boolean isBlack) {
-            this.data = data;
-            this.label = label;
-            this.isBlack = isBlack;
-            assert checkRep();
-        }
-
-        /**
-         * @return true if the node is black, false otherwise.
-         */
-        public boolean isBlack() {
-            assert checkRep();
-            return isBlack;
-        }
-
-        /**
-         * @return the data object of this.
-         */
-        public Object getData() {
-            assert checkRep();
-            return data;
-        }
-
-        /**
-         * @modifies this data.
-         * @effects the data in this is set to 'data'.
-         */
-        public void setData(Object data) {
-            assert checkRep();
-            this.data = data;
-            assert checkRep();
-        }
-
-        /**
-         * @return the label object of this.
-         */
-        public T getLabel() {
-            assert checkRep();
-            return label;
-        }
-
-        /**
-         * @return out edges for children, Maps edge label of type T to child Node.
-         */
-        public Map<T, Node<T>> getChildrenEdges() {
-            assert checkRep();
-            return outEdges;
-        }
-
-        /**
-         * @return in edges for parents, Maps edge label of type T to parent Node.
-         */
-        public Map<T, Node<T>> getParentsEdges() {
-            assert checkRep();
-            return inEdges;
-        }
-
-        /**
-         * @return a collection of children nodes labels.
-         */
-        public Collection<T> getChildrenLabels() {
-            assert checkRep();
-            return childrenLabels;
-        }
-
-        /**
-         * @return a collection of parent nodes labels.
-         */
-        public Collection<T> getParentsLabels() {
-            assert checkRep();
-            return parentLabels;
-        }
-
-        /**
-         * @return a collection of children nodes labels.
-         */
-        public Collection<T> getChildrenLabelsSet() {
-            assert checkRep();
-            return childrenLabelsSet;
-        }
-
-        /**
-         * @return a collection of parent nodes labels.
-         */
-        public Collection<T> getParentsLabelsSet() {
-            assert checkRep();
-            return parentLabelsSet;
-        }
-
-        /**
-         * @modifies All neighbors of this Node.
-         * @effects removes this node connections from all his child\parents, so it can be destruct.
-         */
-        public void removeNode() {
-            assert checkRep();
-            for (Map.Entry<T, Node<T>> edge : outEdges.entrySet()) {
-                edge.getValue().inEdges.remove(edge.getKey());
-                edge.getValue().parentLabels.remove(label);
-                edge.getValue().parentLabelsSet.remove(label);
-            }
-            for (Map.Entry<T, Node<T>> edge : inEdges.entrySet()) {
-                edge.getValue().outEdges.remove(edge.getKey());
-                edge.getValue().childrenLabels.remove(label);
-                edge.getValue().childrenLabelsSet.remove(label);
-            }
-            assert checkRep();
-        }
-
-        /**
-         * @modifies this edges.
-         * @effects removes the edge if exist from node child and this.
-         */
-        public void removeChild(T edgeLabel) {
-            assert checkRep();
-            Node<T> toRemove = outEdges.remove(edgeLabel);
-            if(toRemove != null){
-                toRemove.inEdges.remove(edgeLabel);
-                toRemove.parentLabels.remove(label);
-                toRemove.parentLabelsSet.remove(label);
-                childrenLabels.remove(toRemove.label);
-                childrenLabelsSet.remove(toRemove.label);
-            }
-            assert checkRep();
-        }
-
-        /**
-         * @modifies this and neighbor edges.
-         * @effects removes the edge if exist from node parent and this.
-         */
-        public void removeParent(T edgeLabel) {
-            assert checkRep();
-            Node<T> toRemove = inEdges.remove(edgeLabel);
-            if(toRemove != null){
-                toRemove.outEdges.remove(edgeLabel);
-                toRemove.childrenLabels.remove(label);
-                parentLabels.remove(toRemove.label);
-                toRemove.childrenLabelsSet.remove(label);
-                parentLabelsSet.remove(toRemove.label);
-            }
-            assert checkRep();
-        }
-
-        /**
-         * @return true iff 'edgeLabel' exist as an edge to
-         * child in case of out==true, otherwise to parent.
-         */
-        public boolean edgeExist(T edgeLabel, boolean out){
-            return out? outEdges.containsKey(edgeLabel) : inEdges.containsKey(edgeLabel);
-        }
-
-        /**
-         * @modifies this children labels, children edges.
-         * @effects an edge is drawn from this to child iff parameters are'nt null and
-         * 'edgeLabel' is not exist in other child and this direct edge not exist with other label
-         */
-        public void addChild(T edgeLabel, Node<T> child) {
-            assert checkRep();
-            if (child != null && edgeLabel != null && !outEdges.containsKey(edgeLabel)
-                    && !childrenLabelsSet.contains(child.getLabel())) {
-                childrenLabels.add(child.getLabel());
-                childrenLabelsSet.add(child.getLabel());
-                outEdges.put(edgeLabel, child);
-            }
-            assert checkRep();
-        }
-
-        /**
-         * @modifies this parent labels, parent edges.
-         * @effects an edge is drawn from parent to this iff parameters are'nt null and
-         * 'edgeLabel' is not exist in other parent and this direct edge not exist with other label
-         */
-        public void addParent(T edgeLabel, Node<T> parent) {
-            assert checkRep();
-            if (parent != null && edgeLabel != null && !inEdges.containsKey(edgeLabel)
-                    && !parentLabelsSet.contains(parent.getLabel())) {
-                parentLabels.add(parent.getLabel());
-                parentLabelsSet.add(parent.getLabel());
-                inEdges.put(edgeLabel, parent);
-            }
-            assert checkRep();
-        }
+        assert checkRep();
+        _nodes.clear();
+        assert checkRep();
     }
 
 }
