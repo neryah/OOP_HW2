@@ -1,13 +1,26 @@
 package homework2;
 
 import java.util.*;
+/**
+ * a Participant is a class representing participant which is connected only to channels, in both in and out edges.
+ * It's implemented Simulatable of String.
+ * a Participant is identified by it's label, and is looking for one 'Transaction',
+ * which he will keep if he get from a channel.
+ */
 
 public class Participant implements Simulatable<String>{
+
     /**
-     * @modifies this, graph
-     * @effects Simulates this filter in a system modeled by graph
+     * Abstraction function:	a participant holds in a bipartite graph as a black node,
+     *                          so it is connected only to white nodes - channels.
+     *                          He is holds the "Transaction" he is looking for in '_need'.
+     *                          He is holds his storage in list '_storageBuffer'.
+     *                          He is holds the products he wants to transfer in list '_trans'.
      */
 
+    /**
+     * Rep. Invariant:	_need.getAmount() >= 0.
+     */
 
     private boolean checkRep() {
         return _need.getAmount() >= 0;
@@ -56,7 +69,6 @@ public class Participant implements Simulatable<String>{
         Iterator<Transaction> transIter = _trans.iterator();
         while(transIter.hasNext()) {
             Transaction t = transIter.next();
-            //assert (t.getAmount() > 0);
             Collection<String> childrenNames = graph.listChildren(_label);
             for (String pipeName : childrenNames) {
                 Channel child = (Channel)graph.findNode(pipeName).getData();

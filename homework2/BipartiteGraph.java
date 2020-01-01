@@ -45,7 +45,7 @@ public class BipartiteGraph<T> {
     private Map<T, Node<T>> _nodes = new HashMap<>();
 
     /**
-     * @return a new empty instance of this.
+     * a new empty instance of this.
      */
     public BipartiteGraph() {
         assert checkRep();

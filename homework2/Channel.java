@@ -2,7 +2,25 @@ package homework2;
 
 import java.util.*;
 
+/**
+ * a Channel is a class representing channel which is connected only to participants, in both in and out edges.
+ * It's implemented Simulatable of String.
+ * a Channel is identified by it's label, and has limit of product's amount it can hold.
+ */
+
 public class Channel implements Simulatable<String>{
+
+    /**
+     * Abstraction function:	a channel holds in a bipartite graph as a white node,
+     *                          so it is connected only to black nodes - participant.
+     *                          It is holds the limit in '_limit'.
+     *                          It is holds the products in list '_trans'.
+     *                          It is holds the amount of products it currently has in '_curAmount'.
+     */
+
+    /**
+     * Rep. Invariant:	_limit >= _curAmount && _curAmount >= 0.
+     */
 
     private String _label;
     private int _limit;
@@ -27,7 +45,6 @@ public class Channel implements Simulatable<String>{
      * @return a random element from 'collection' if it's not empty.
      */
     private static <T> Optional<T> getRandomElement (Collection<T> collection) {
-        //return collection.stream().skip((int) (1)).findFirst();
         return collection.stream().skip((int) (collection.size() * Math.random())).findFirst();
     }
 

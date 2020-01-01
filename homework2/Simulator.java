@@ -1,9 +1,6 @@
 package homework2;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * a simulator is a class for simulating a system represented by a bipartite graph of channels and filters.
@@ -89,8 +86,12 @@ public class Simulator<L, D> {
         StringBuilder allEdges = new StringBuilder("");
         for (L nodeLabel : _graph.listNodes(true)) {
             Node<L> node = _graph.findNode(nodeLabel);
-            allEdges.append(node.getParentsEdges().keySet()).append(" ");
-            allEdges.append(node.getChildrenEdges().keySet()).append(" ");
+            for(L l : node.getParentsEdges().keySet()){
+                allEdges.append(l).append(" ");
+            }
+            for(L l : node.getChildrenEdges().keySet()){
+                allEdges.append(l).append(" ");
+            }
         }
         System.out.println(allEdges);
     }

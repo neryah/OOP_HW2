@@ -3,7 +3,7 @@ package homework2;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.assertTrue;
 public class SimulatorTest {
     //  Black-box tests
     private static void simulateKTimes(int k, SimulatorTestDriver driver, String simName){
